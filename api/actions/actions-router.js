@@ -45,6 +45,12 @@ router.put('/:id',validateActionId, (req, res, next)=>{
     }
     
 })
+
+router.delete('/:id', validateActionId, (req,res,next)=>{
+    Actions.remove(req.params.id)
+    .then(deletion=>{res.status(200).json({message: "action deleted"})})
+    .catch(next)
+})
 router.use((err, req, res, next)=>{
     res.status(err.status || 500).json({
       customMessage: "something bad happend ",
