@@ -28,6 +28,23 @@ router.post('/', validateProjectId, (req, res, next)=>{
     )
     .catch(next)
 })
+
+router.put('/:id',validateActionId, (req, res, next)=>{
+    const {project_id,description,notes}=req.body;
+    if(project_id && description&& notes){
+        Actions.update(req.params.id, req.body)
+        .then(action=>{
+        if(!action){
+            res.status(404).json({message: "action with given id does not exist"})
+        } else {
+            res.status(200).json(action)
+        }
+    }).catch(next)
+    }else{
+        res.status(400).json({message: "missing project id or description or notes"})
+    }
+    
+})
 router.use((err, req, res, next)=>{
     res.status(err.status || 500).json({
       customMessage: "something bad happend ",
