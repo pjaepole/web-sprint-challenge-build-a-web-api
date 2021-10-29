@@ -1,4 +1,5 @@
 const Actions = require('./actions-model')
+const Projects= require('../projects/projects-model')
 
 async function validateActionId(req, res, next){
     try{
@@ -16,6 +17,24 @@ async function validateActionId(req, res, next){
     }
 }
 
+async function validateProjectId(req, res, next){
+    const {project_id, description, notes}=req.body
+    if(project_id && description && notes){
+        try{  
+            const project= await Projects.get(req.body.project_id)
+            if(project){
+            next()
+        } else {
+            res.status(400).json({message: "Please provide valid project id"})
+        }
+    }
+        catch(err){next(err)}
+    } else {
+        res.status(400).json({message: "Please provide valid input"})
+    }
+    
+}
 module.exports ={
-    validateActionId
+    validateActionId,
+    validateProjectId
 }

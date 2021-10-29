@@ -1,7 +1,8 @@
 const express=require('express')
 
 const Actions =require('./actions-model')
-const {validateActionId}= require('./actions-middlware')
+const {validateActionId,
+    validateProjectId}= require('./actions-middlware')
 const router = express.Router()
 
 router.get('/', (req, res, next)=>{
@@ -20,7 +21,13 @@ router.get('/:id',validateActionId, (req, res, next)=>{
     res.json(req.validatedAction)
 })
 
-
+router.post('/', validateProjectId, (req, res, next)=>{
+    Actions.insert(req.body)
+    .then(newAction=>{
+        res.status(201).json(newAction)}
+    )
+    .catch(next)
+})
 router.use((err, req, res, next)=>{
     res.status(err.status || 500).json({
       customMessage: "something bad happend ",
