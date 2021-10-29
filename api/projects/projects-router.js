@@ -30,12 +30,14 @@ router.post('/', async (req, res, next)=>{
     }
 })
 
-router.put('/:id', validateProjectID, (req, res, next)=>{
+
+
+router.put('/:id', validateProjectID, async (req, res, next)=>{
     const {name, description, completed}=req.body
     if(!name || !description || !completed){
         res.status(400).json({message: "missing name, description, completed"})
     } else {
-    Projects.update(req.params.id,req.body)
+   await Projects.update(req.params.id,req.body)
     .then(updatedProject=>{
         res.status(200).json(updatedProject)
     })
