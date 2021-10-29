@@ -4,8 +4,8 @@ const {validateProjectID}=require('./projects-middleware')
 const Projects = require('./projects-model')
 const router = express.Router()
 
-router.get('/', (req,res,next)=>{
-    Projects.get()
+router.get('/', async (req,res,next)=>{
+    await Projects.get()
     .then(projects=>{
         res.status(200).json(projects)
     })
@@ -16,13 +16,13 @@ router.get('/:id', validateProjectID, (req,res)=>{
     res.status(200).json(req.project)
 })
 
-router.post('/', (req, res, next)=>{
+router.post('/', async (req, res, next)=>{
     const {name, description}=req.body
     if(!name || !description){
         res.status(400).json({
             message:'need name and description for the project'})
     } else {
-        Projects.insert(req.body)
+        await Projects.insert(req.body)
         .then(newProject=>{
             res.status(201).json(newProject)
         })
@@ -30,7 +30,19 @@ router.post('/', (req, res, next)=>{
     }
 })
 
-
+router.put('/:id', validateProjectID, (req, res, next)=>{
+    const {name, description, completed}=req.body
+    if(!name || !description || !completed){
+        res.status(400).json({message: "missing name, description, completed"})
+    } else {
+    Projects.update(req.params.id,req.body)
+    .then(updatedProject=>{
+        res.status(200).json(updatedProject)
+    })
+    .then(response=>{
+        return Projects.get(req.params.id)})
+    .catch(next)}
+})
 
 
 router.use((err, req, res, next)=>{
