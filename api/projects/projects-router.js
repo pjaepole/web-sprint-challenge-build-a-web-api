@@ -51,6 +51,15 @@ router.delete('/:id', validateProjectID, (req, res, next)=>{
     })
     .catch(next)
 })
+
+router.get('/:id/actions',validateProjectID, (req,res,next)=>{
+    Projects.getProjectActions(req.params.id)
+    .then(result=>{
+        res.status(200).json(result)
+    })
+    .catch(next)
+})
+
 router.use((err, req, res, next)=>{
     res.status(err.status || 500).json({
       customMessage: "something bad happend ",
