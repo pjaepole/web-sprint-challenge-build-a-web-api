@@ -11,10 +11,24 @@ router.get('/', (req,res,next)=>{
     })
     .catch(next)
 })
+
 router.get('/:id', validateProjectID, (req,res)=>{
     res.status(200).json(req.project)
 })
 
+router.post('/', (req, res, next)=>{
+    const {name, description}=req.body
+    if(!name || !description){
+        res.status(400).json({
+            message:'need name and description for the project'})
+    } else {
+        Projects.insert(req.body)
+        .then(newProject=>{
+            res.status(201).json(newProject)
+        })
+        .catch(next)
+    }
+})
 
 
 
