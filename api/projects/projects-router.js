@@ -44,7 +44,13 @@ router.put('/:id', validateProjectID, (req, res, next)=>{
     .catch(next)}
 })
 
-
+router.delete('/:id', validateProjectID, (req, res, next)=>{
+    Projects.remove(req.params.id)
+    .then(deletion=>{
+        res.status(200).json({message: "project deleted"})
+    })
+    .catch(next)
+})
 router.use((err, req, res, next)=>{
     res.status(err.status || 500).json({
       customMessage: "something bad happend ",
